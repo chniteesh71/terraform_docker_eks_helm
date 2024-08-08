@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     
@@ -38,19 +39,11 @@ pipeline {
           }
         }
         
-        stage('Deploy to EKS') {
-            agent { label 'EKS'}
-            steps {
-                withAWS(credentials: 'awscreds', region: "${env.AWS_DEFAULT_REGION}") {
-                        script {
-                            sh """
-                            aws eks update-kubeconfig --name Niteesh-cluster
-                            sh "helm upgrade --install --force sample-stack helm/niteeshcharts --set appimage=${registry}:V${BUILD_NUMBER} --namespace prod"
-                            """
-                        }
-                    }
-                }
-         }
+        stage ('Kubernetes deploy') {
+          agent { label 'EKS'}
+          steps {
+              sh "helm upgrade --install --force sample-stack helm/samplecharts --set appimage=${registry}:V$(BUILD_NUMBER) --namespace prod"
+          }
+        }
      }
 }
-
