@@ -42,7 +42,7 @@ pipeline {
         stage ('Kubernetes deploy') {
           agent { label 'EKS'}
           steps {
-              sh "helm upgrade --install --force sample-stack helm/samplecharts --set appimage=${registry}:V$(BUILD_NUMBER) --namespace prod"
+              sh "helm upgrade --install --force sample-stack helm/samplecharts --set appimage=${registry}:V${BUILD_NUMBER} --namespace prod"
           }
         }
      }
